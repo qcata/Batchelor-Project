@@ -1,38 +1,89 @@
 <template>
-    <div class="container-fluid">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-        <dnd-grid-container
-            :layout.sync="layout"
-            :cellSize="cellSize"
-            :maxColumnCount="maxColumnCount"
-            :maxRowCount="maxRowCount"
-            :margin="margin"
-            :bubbleUp="bubbleUp"
-        >
-            <dnd-grid-box
-                v-for="number in boxCount"
-                :boxId="number"
-                :key="number"
-                dragSelector="div.card-header"
+    <div class="container-fluid">
+        
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <div class="boxContainer">
+            <dnd-grid-container
+                :layout.sync="layout"
+                :cellSize="cellSize"
+                :maxColumnCount="maxColumnCount"
+                :maxRowCount="maxRowCount"
+                :margin="margin"
+                :bubbleUp="bubbleUp"
             >
-                <div class="card demo-box" v-on:click="ceva()">
-                </div>
-            </dnd-grid-box>
-        </dnd-grid-container>
+                <dnd-grid-box
+                    v-for="number in boxCount"
+                    :boxId="number"
+                    :key="number"
+                    dragSelector="div.demo-box"
+                >
+                <!-- v-on:click="ceva(number)" -->
+                    <div class="card demo-box" style="background-color:#C9E29E;" @click.stop="dialog = true" @mouseover="ceva(number,true)" @mouseout="ceva(number,false)" :ref=number>
+                    </div>
+                </dnd-grid-box>
+            </dnd-grid-container>
+        </div>
+
+        <v-dialog v-model="dialog" max-width="290" >
+      <v-card>
+        <v-card-title class="headline">Open timetable</v-card-title>
+        <v-list subheader>
+          <v-list-tile
+            v-for="item in tableItems"
+            :key="item.title"
+            @click="">
+
+            <v-list-tile-content>
+              <v-list-tile-title v-html="item.title"></v-list-tile-title>
+            </v-list-tile-content>
+
+            <v-list-tile-action>
+              <v-icon color="green">free_breakfast</v-icon>
+            </v-list-tile-action>
+          </v-list-tile>
+        </v-list>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn
+            color="green darken-1"
+            flat="flat"
+            @click="dialog = false"
+          >
+            Disagree
+          </v-btn>
+
+          <v-btn
+            color="green darken-1"
+            flat="flat"
+            @click="dialog = false"
+          >
+            Agree
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     </div>
+
+    
 </template>
 <style>
     .demo-box {
         width: 100%;
         height: 100%;
     }
+    .boxContainer{
+        display: flex;
+        justify-content: center;
+        padding-right: 5%;
+    }
 </style>
 <script> 
 
 
-import { Container, Box } from '@dattn/dnd-grid'
-import '@dattn/dnd-grid/dist/dnd-grid.css'
+import { Container, Box } from '@dattn/dnd-grid';
+import '@dattn/dnd-grid/dist/dnd-grid.css';
 
     export default {
       components: {
@@ -42,6 +93,7 @@ import '@dattn/dnd-grid/dist/dnd-grid.css'
         name : 'Home',
         data () {
             return {
+                dialog: false,
                 cellSize: {
                     w: 100,
                     h: 50
@@ -51,59 +103,13 @@ import '@dattn/dnd-grid/dist/dnd-grid.css'
                 bubbleUp: false,
                 margin: 10,
                 boxCount: 41,
-                layout: [
-                    //sus
-                    { id: 1, hidden: false, pinned: true, position: { x: 1, y: 1, w: 1, h: 2 } },
-                    { id: 2, hidden: false, pinned: true, position: { x: 3, y: 1, w: 1, h: 2 } },
-                    { id: 3, hidden: false, pinned: true, position: { x: 5, y: 1, w: 2, h: 2 } },
-                    { id: 4, hidden: false, pinned: true, position: { x: 8, y: 1, w: 1, h: 2 } },
-                    { id: 5, hidden: false, pinned: true, position: { x: 9, y: 1, w: 1, h: 2 } },
-                    { id: 6, hidden: false, pinned: true, position: { x: 10, y: 1, w: 2, h: 2 } },
-                    //mijloc intrare
-                    { id: 7, hidden: false, pinned: true, position: { x: 1, y: 3, w: 1, h: 2 } },
-                    { id: 8, hidden: false, pinned: true, position: { x: 1, y: 7, w: 1, h: 2 } },
-                    //jos
-                    { id: 9, hidden: false, pinned: true, position: { x: 1, y: 9, w: 1, h: 2 } },
-                    { id: 10, hidden: false, pinned: true, position: { x: 9, y: 9, w: 1, h: 2 } },
-                    { id: 11, hidden: false, pinned: true, position: { x: 10, y: 9, w: 1, h: 2 } },
-                    { id: 12, hidden: false, pinned: true, position: { x: 11, y: 9, w: 1, h: 2 } },
-                    { id: 13, hidden: false, pinned: true, position: { x: 3, y: 9, w: 2, h: 2 } },
-                    { id: 14, hidden: false, pinned: true, position: { x: 5, y: 9, w: 1, h: 2 } },
-                    { id: 15, hidden: false, pinned: true, position: { x: 6, y: 9, w: 2, h: 2 } },
-                    //bar
-                    { id: 16, hidden: false, pinned: true, position: { x: 4, y: 5, w: 5, h: 2 } },
-                    //bar sus
-                    { id: 17, hidden: false, pinned: true, position: { x: 4, y: 4, w: 0.5, h: 1 } },
-                    { id: 18, hidden: false, pinned: true, position: { x: 4.5, y: 4, w: 0.5, h: 1 } },
-                    { id: 19, hidden: false, pinned: true, position: { x: 5, y: 4, w: 0.5, h: 1 } },
-                    { id: 20, hidden: false, pinned: true, position: { x: 5.5, y: 4, w: 0.5, h: 1 } },
-                    { id: 21, hidden: false, pinned: true, position: { x: 6, y: 4, w: 0.5, h: 1 } },
-                    { id: 22, hidden: false, pinned: true, position: { x: 6.5, y: 4, w: 0.5, h: 1 } },
-                    { id: 23, hidden: false, pinned: true, position: { x: 7, y: 4, w: 0.5, h: 1 } },
-                    { id: 24, hidden: false, pinned: true, position: { x: 7.5, y: 4, w: 0.5, h: 1 } },
-                    { id: 25, hidden: false, pinned: true, position: { x: 8, y: 4, w: 0.5, h: 1 } },
-                    { id: 26, hidden: false, pinned: true, position: { x: 8.5, y: 4, w: 0.5, h: 1 } },
-                    //bar jos
-                    { id: 27, hidden: false, pinned: true, position: { x: 4, y: 7, w: 0.5, h: 1 } },
-                    { id: 28, hidden: false, pinned: true, position: { x: 4.5, y: 7, w: 0.5, h: 1 } },
-                    { id: 29, hidden: false, pinned: true, position: { x: 5, y: 7, w: 0.5, h: 1 } },
-                    { id: 30, hidden: false, pinned: true, position: { x: 5.5, y: 7, w: 0.5, h: 1 } },
-                    { id: 31, hidden: false, pinned: true, position: { x: 6, y: 7, w: 0.5, h: 1 } },
-                    { id: 32, hidden: false, pinned: true, position: { x: 6.5, y: 7, w: 0.5, h: 1 } },
-                    { id: 33, hidden: false, pinned: true, position: { x: 7, y: 7, w: 0.5, h: 1 } },
-                    { id: 34, hidden: false, pinned: true, position: { x: 7.5, y: 7, w: 0.5, h: 1 } },
-                    { id: 35, hidden: false, pinned: true, position: { x: 8, y: 7, w: 0.5, h: 1 } },
-                    { id: 36, hidden: false, pinned: true, position: { x: 8.5, y: 7, w: 0.5, h: 1 } },
-                    //bar fata
-                    { id: 37, hidden: false, pinned: true, position: { x: 3.5, y: 5, w: 0.5, h: 1 } },
-                    { id: 38, hidden: false, pinned: true, position: { x: 3.5, y: 6, w: 0.5, h: 1 } },
-                    //bar spate
-                    { id: 39, hidden: false, pinned: true, position: { x: 9, y: 5, w: 0.5, h: 1 } },
-                    { id: 40, hidden: false, pinned: true, position: { x: 9, y: 6, w: 0.5, h: 1 } },
-                    //masa mare spate
-                    { id: 41, hidden: false, pinned: true, position: { x: 11, y: 4, w: 1, h: 4 } },
-                    
-                ]
+                tableItems: [
+                    { title: '10:30' },
+                    { title: '11:00' },
+                    { title: '17:00' },
+                    { title: '17:30' }
+                ],
+                layout: []
             }
         },
         computed: {
@@ -117,9 +123,21 @@ import '@dattn/dnd-grid/dist/dnd-grid.css'
             onLayoutUpdate (evt) {
                 this.layout = evt.layout
             },
-            ceva(){
-              
+            ceva(e,b){
+              if(b == true)
+                this.$refs[e][0].style.backgroundColor = "#FD626A";
+              else
+                this.$refs[e][0].style.backgroundColor = "#C9E29E";
+              // e.style.background
             }
+        },
+        mounted () {
+          this.axios
+            .get('https://localhost:44379/Tables/GetTables',{params: {restaurantId: 1}})
+            .then(response => this.layout = response.data)
+            .catch(function(error) {
+              console.log('ERROR::', error.data);
+            });
         }
 
         }
