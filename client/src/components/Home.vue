@@ -31,8 +31,8 @@
         <v-list subheader>
           <v-list-tile
             v-for="item in tableItems"
-            :key="item.title"
-            @click="">
+            :key="item.title">
+            <!-- @click=""> -->
 
             <v-list-tile-content>
               <v-list-tile-title v-html="item.title"></v-list-tile-title>
@@ -135,8 +135,8 @@ import '@dattn/dnd-grid/dist/dnd-grid.css';
           this.axios
             .get('https://localhost:44379/Tables/GetTables',{params: {restaurantId: 1}})
             .then(response => this.layout = response.data)
-            .catch(function(error) {
-              console.log('ERROR::', error.data);
+            .catch(function() {
+              // console.log('ERROR::', error.data);
             });
         }
 

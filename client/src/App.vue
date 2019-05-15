@@ -1,20 +1,16 @@
 <template>
-  <v-app>
-    <v-content>
-      <main id="page-wrap">
-      <Home/>
-      </main>
-    </v-content>
-  </v-app>
+  <PageTemplate/>
 </template>
 
 <script>
-import Home from './components/Home'
+//import Home from './components/Home'
+// import Agenda from './components/Agenda'
+import PageTemplate from './components/PageTemplate'
 
 export default {
   name: 'App',
   components: {
-    Home
+    PageTemplate
   },
   data () {
     return {
@@ -25,6 +21,7 @@ export default {
 </script>
 
 <style>
+
  .bm-burger-button {
       position: fixed;
       width: 36px;
