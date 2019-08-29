@@ -20,6 +20,7 @@ namespace WebApplication.Controllers
 
             var tables = _context.Tables.ToList();
             var model = TableMapper.GetTableModelFrom(tables);
+
             return Json(model);
         }
     }

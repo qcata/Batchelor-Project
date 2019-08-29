@@ -23,5 +23,7 @@ namespace WebApplication.Data
 
         public float position_h { get; set; }
 
+        public int maxPeople { get; set; }
+
     }
 }

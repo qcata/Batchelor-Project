@@ -19,51 +19,11 @@
                     dragSelector="div.demo-box"
                 >
                 <!-- v-on:click="ceva(number)" -->
-                    <div class="card demo-box" style="background-color:#C9E29E;" @click.stop="dialog = true" @mouseover="ceva(number,true)" @mouseout="ceva(number,false)" :ref=number>
+                    <div class="card demo-box" style="background-color:#C9E29E;" @click.stop="moveToPage(3,number)" @mouseover="ceva(number,true)" @mouseout="ceva(number,false)" :ref=number>
                     </div>
                 </dnd-grid-box>
             </dnd-grid-container>
         </div>
-
-        <v-dialog v-model="dialog" max-width="290" >
-      <v-card>
-        <v-card-title class="headline">Open timetable</v-card-title>
-        <v-list subheader>
-          <v-list-tile
-            v-for="item in tableItems"
-            :key="item.title">
-            <!-- @click=""> -->
-
-            <v-list-tile-content>
-              <v-list-tile-title v-html="item.title"></v-list-tile-title>
-            </v-list-tile-content>
-
-            <v-list-tile-action>
-              <v-icon color="green">free_breakfast</v-icon>
-            </v-list-tile-action>
-          </v-list-tile>
-        </v-list>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-
-          <v-btn
-            color="green darken-1"
-            flat="flat"
-            @click="dialog = false"
-          >
-            Disagree
-          </v-btn>
-
-          <v-btn
-            color="green darken-1"
-            flat="flat"
-            @click="dialog = false"
-          >
-            Agree
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
     </div>
 
     
@@ -85,6 +45,7 @@
 import { Container, Box } from '@dattn/dnd-grid';
 import '@dattn/dnd-grid/dist/dnd-grid.css';
 
+
     export default {
       components: {
             DndGridContainer: Container,
@@ -93,7 +54,6 @@ import '@dattn/dnd-grid/dist/dnd-grid.css';
         name : 'Home',
         data () {
             return {
-                dialog: false,
                 cellSize: {
                     w: 100,
                     h: 50
@@ -128,7 +88,25 @@ import '@dattn/dnd-grid/dist/dnd-grid.css';
                 this.$refs[e][0].style.backgroundColor = "#FD626A";
               else
                 this.$refs[e][0].style.backgroundColor = "#C9E29E";
-              // e.style.background
+            },
+            moveToPage(pageNr,targetTable){
+                location.hash = "#page" + pageNr;
+
+                this.axios
+                    .get('https://localhost:44379/Appointments/GetAppointments',
+                    {
+                        headers: {
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        params: {
+                            restaurantId: 1,
+                            tableId: targetTable}
+                    })
+                    .then(response => {
+                        this.$emit('loadAppointments', response.data, targetTable);
+                    })
+                    .catch(function() {
+                    });
             }
         },
         mounted () {

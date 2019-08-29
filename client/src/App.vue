@@ -1,16 +1,14 @@
 <template>
-  <PageTemplate/>
+  <MainPage/>
 </template>
 
 <script>
-//import Home from './components/Home'
-// import Agenda from './components/Agenda'
-import PageTemplate from './components/PageTemplate'
+import MainPage from './components/MainPage'
 
 export default {
   name: 'App',
   components: {
-    PageTemplate
+    MainPage
   },
   data () {
     return {

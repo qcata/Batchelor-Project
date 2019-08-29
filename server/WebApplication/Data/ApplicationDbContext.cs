@@ -15,5 +15,7 @@ namespace WebApplication.Data
         public DbSet<TablesLayout> Tables { get; set; }
 
         public DbSet<Appointments> Appointments { get; set; }
+
+        public DbSet<RestaurantSettings> RestaurantSettings { get; set; }
     }
 }

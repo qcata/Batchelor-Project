@@ -21,5 +21,9 @@ namespace WebApplication.Data
         public string persName { get; set; }
 
         public string persPhone { get; set; }
+
+        public string persEmail { get; set; }
+
+        public bool hasBeenHonored { get; set; }
     }
 }
