@@ -66,10 +66,10 @@ namespace WebApplication.Controllers
                 }
                 else
                 {
-                    return Json(new { success = false, responseText = "overlapping" });
+                    return Json(new { success = false, responseText = "Overlapping appointments. Please select another time-slot." });
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Json(new { success = false, responseText = ex });
             }
@@ -88,7 +88,13 @@ namespace WebApplication.Controllers
                 {
                     _context.Appointments.Add(appointment);
                     _context.SaveChanges();
-                    return Json(new { success = true });
+                    //TwilloCommunication.SendMessageToClient("");
+                    if (!string.IsNullOrEmpty(appointment.persEmail))
+                    {
+                        SmtpHelper.SendEmail(appointment,_context);
+                    }
+
+                    return Json(new { success = true , responseText = appointment.Id });
                 }
                 else
                 {
@@ -103,35 +109,35 @@ namespace WebApplication.Controllers
         }
 
 
-            private Appointments CreateAppointmentFromEvent(int restaurantId, int tableId, string agendaEvent)
+        private Appointments CreateAppointmentFromEvent(int restaurantId, int tableId, string agendaEvent)
+        {
+            var myEvent = JsonConvert.DeserializeObject<EventViewModel>(agendaEvent);
+            myEvent.date = myEvent.date.AddDays(1);
+            var restaurant = _context.Restaurants.Where(r => r.Id == restaurantId).FirstOrDefault();
+
+            if (restaurant == null)
             {
-                var myEvent = JsonConvert.DeserializeObject<EventViewModel>(agendaEvent);
-                myEvent.date = myEvent.date.AddDays(1);
-                var restaurant = _context.Restaurants.Where(r => r.Id == restaurantId).FirstOrDefault();
-
-                if (restaurant == null)
-                {
-                    throw new Exception("Invalid restaurant");
-                }
-
-                var table = _context.Tables.Where(t => t.localTableId == tableId &&
-                                                       t.restaurantId == restaurant).FirstOrDefault();
-
-                if (table == null)
-                {
-                    throw new Exception("Invalid table");
-                }
-                if (table.maxPeople < myEvent.PplCount)
-                {
-                throw new Exception("The table you selected is too small.\n Please select a bigger table or contact the restaurant management for special reservations.");
-                }
-
-                myEvent.table = table;
-                myEvent.restaurant = restaurant;
-
-                var appointment = AppointmentsMapper.GetAppointmentFrom(myEvent);
-                return appointment;
+                throw new Exception("Invalid restaurant");
             }
-        }
 
+            var table = _context.Tables.Where(t => t.localTableId == tableId &&
+                                                   t.restaurantId == restaurant).FirstOrDefault();
+
+            if (table == null)
+            {
+                throw new Exception("Invalid table");
+            }
+            if (table.maxPeople < myEvent.PplCount)
+            {
+                throw new Exception("The table you selected is too small.\n Please select a bigger table or contact the restaurant management for special reservations.");
+            }
+
+            myEvent.table = table;
+            myEvent.restaurant = restaurant;
+
+            var appointment = AppointmentsMapper.GetAppointmentFrom(myEvent);
+            return appointment;
+        }
     }
+
+}

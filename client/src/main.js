@@ -10,6 +10,9 @@ import 'fullpage.js/vendors/scrolloverflow'
 import VueFullPage from 'vue-fullpage.js'
 import VueCardPayment from 'vue-card-payment'
 import 'vue-card-payment/dist/vue-card-payment.css'
+import VueCardFormat from 'vue-credit-card-validation';
+import VueSession from 'vue-session'
+
  
 
 
@@ -24,6 +27,8 @@ Vue.use(VueScheduler, { availableViews:[],
                       });
 Vue.use(VueFullPage);
 Vue.use(VueCardPayment);
+Vue.use(VueCardFormat);
+Vue.use(VueSession)
 
 new Vue({
   router,

@@ -17,5 +17,9 @@ namespace WebApplication.Data
         public DbSet<Appointments> Appointments { get; set; }
 
         public DbSet<RestaurantSettings> RestaurantSettings { get; set; }
+
+        public DbSet<Menu> Menus { get; set; }
+
+        public DbSet<Inventory> Inventories { get; set; }
     }
 }

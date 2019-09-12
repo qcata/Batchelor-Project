@@ -25,7 +25,7 @@ namespace WebApplication.Utils
         public static Appointments GetAppointmentFrom(EventViewModel eventModel)
         {
             var ts = TimeSpan.Parse(eventModel.startTime);
-            var tempStartTime = new DateTime(eventModel.date.Year, eventModel.date.Month, eventModel.date.Day, ts.Hours, ts.Minutes, 0);
+            var tempStartTime = new DateTime(eventModel.date.Year, eventModel.date.Month, eventModel.date.Day, ts.Hours, ts.Minutes, 0).AddSeconds(1);
 
 
             ts = TimeSpan.Parse(eventModel.endTime);
@@ -35,6 +35,7 @@ namespace WebApplication.Utils
             {
                 persName = eventModel.Name,
                 persPhone = eventModel.Phone,
+                persEmail = eventModel.Email,
                 pplCount = 1,
                 restaurant = eventModel.restaurant,
                 startTime = tempStartTime,
