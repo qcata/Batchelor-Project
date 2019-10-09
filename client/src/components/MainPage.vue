@@ -158,7 +158,7 @@
                         <td class="text-left">{{ props.item.name }}</td>
                         <td class="text-xs-right">{{ props.item.price }}</td>
                         <td>
-                          <v-btn fab dark small color="green" @click="AddItemToReceip(props.item.id)">
+                          <v-btn fab dark small color="green" @click="AddItemToReceip(props.item)">
                             <v-icon dark>add</v-icon>
                           </v-btn>
                         </td>
@@ -168,13 +168,44 @@
                 </v-tabs-items>
               </v-flex>
               <v-flex xs6>
-                <v-card color="secondary" flat>
-                  <a href="#page2">
-                    <h1 class="display-1 ma-2 text-xs-left" style="color:black">To restaurant</h1>
-                  </a>
-                  <a href="#page1/1">
-                    <h1 class="display-1 ma-2 text-xs-left" style="color:black">To my reservation</h1>
-                  </a>
+                <v-card>
+                  <v-toolbar color="green" dark>
+                    <v-toolbar-title>Your menu</v-toolbar-title>
+
+                    <v-spacer></v-spacer>
+                  </v-toolbar>
+
+                  <v-list>
+                    <v-list-group
+                      v-for="item in receipItems"
+                      :key="item.title"
+                      v-model="item.active"
+                      :prepend-icon="item.action"
+                      no-action
+                    >
+                      <template v-slot:activator>
+                        <v-list-tile>
+                          <v-list-tile-content>
+                            <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                          </v-list-tile-content>
+                        </v-list-tile>
+                      </template>
+
+                      <v-list-tile v-for="subItem in item.items" :key="subItem.title">
+                        <v-list-tile-content>
+                          <v-list-tile-title>{{ subItem.title }}</v-list-tile-title>
+                          <v-list-tile-sub-title>Quantity: {{ subItem.quantity }}</v-list-tile-sub-title>
+                        </v-list-tile-content>
+
+                        <v-list-tile-action>
+                          <v-icon @click="DecreaseItemQty(1,item,subItem)">exposure_neg_1</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-action>
+                          <v-icon @click="DecreaseItemQty(-1,item,subItem)">delete</v-icon>
+                        </v-list-tile-action>
+                      </v-list-tile>
+                    </v-list-group>
+                  </v-list>
                 </v-card>
               </v-flex>
             </v-layout>
@@ -198,6 +229,10 @@ export default {
     Appointments
   },
   name: "MainPage",
+  mounted() {
+    // var arrows = document.getElementsByClassName("fp-controlArrow");
+    // while(arrows.length > 0)y[0].remove();
+  },
   data() {
     return {
       amountToPay: "",
@@ -209,7 +244,7 @@ export default {
         scrollBar: false,
         menu: "#menu",
         navigation: true,
-        controlArrows: true,
+        controlArrows: false,
         anchors: ["page1", "page2", "page3", "page4", "page5"],
         sectionsColor: []
       },
@@ -233,7 +268,34 @@ export default {
         { id: 8, name: "Frozen Yogurt8", category: 3, price: 10 }
       ],
 
-      filteredItems: []
+      filteredItems: [],
+      receipItems: [
+        {
+          action: "eco",
+          title: "Appetizers",
+          active: true,
+          category: 1,
+          items: []
+        },
+        {
+          action: "restaurant",
+          title: "Entrees",
+          category: 2,
+          items: []
+        },
+        {
+          action: "cake",
+          title: "Deserts",
+          category: 3,
+          items: []
+        },
+        {
+          action: "local_bar",
+          title: "Drinks",
+          category: 4,
+          items: []
+        }
+      ]
     };
   },
   created: function() {
@@ -246,10 +308,48 @@ export default {
     }, 900000); //check time on 15min
   },
   methods: {
-    AddItemToReceip(itemId){
-      console.log(itemId);
+    DecreaseItemQty(qty, item, subItem) {
+      if (qty == 1) {
+        if (subItem.quantity == 0) {
+          const index = item.items.indexOf(subItem);
+
+          if (index !== -1) {
+            item.items.splice(index, 1);
+          }
+        } else {
+          subItem.quantity--;
+        }
+      }
+      if (qty == -1) {
+        const index = item.items.indexOf(subItem);
+
+        if (index !== -1) {
+          item.items.splice(index, 1);
+        }
+      }
+    },
+    AddItemToReceip(item) {
+      var receipItem = this.receipItems.find(function(element) {
+        return element.category == item.category;
+      });
+      if (receipItem != null) {
+        var existingItem = receipItem.items.find(function(element) {
+          return element.itemId == item.id;
+        });
+        if (existingItem != null) existingItem.quantity++;
+        else
+          receipItem.items.push({
+            title: item.name,
+            itemId: item.id,
+            quantity: 1
+          });
+      }
     },
     tabWasChanged(category) {
+      this.receipItems.forEach(receipItem => {
+        if (receipItem.category == category) receipItem.active = true;
+        else receipItem.active = false;
+      });
       this.filteredItems = [];
       this.menuItems.forEach(menuItem => {
         if (menuItem.category == category) {
@@ -270,7 +370,7 @@ export default {
             agendaEvent: JSON.stringify(event)
           }
         })
-        .then(response => {
+        .then(() => {
           location.hash = "#page5";
         })
         .catch(function() {});
@@ -294,6 +394,12 @@ export default {
         .catch(function() {});
     },
     moveToMenuPage() {
+      this.filteredItems = [];
+      this.menuItems.forEach(menuItem => {
+        if (menuItem.category == 1) {
+          this.filteredItems.push(menuItem);
+        }
+      });
       location.hash = "#page5/1";
     },
     onClickChild(isPay, value) {

@@ -7,7 +7,9 @@ namespace WebApplication.Helpers
     {
         public static bool SendMessageToClient(string phoneNumber)
         {
-            
+            const string accountSid = "ACb2aea82e9a7fb8a92ad0a19f02e90aee";
+            const string authToken = "073606ade348cdbc2f35b0364515d659";
+
             TwilioClient.Init(accountSid, authToken);
 
             var message = MessageResource.Create(
