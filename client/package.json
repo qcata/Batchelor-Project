@@ -10,7 +10,7 @@
   "dependencies": {
     "@dattn/dnd-grid": "0.0.14",
     "axios": "^0.18.1",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "v-calendar-scheduler": "^0.7.4",
     "vue": "^2.6.10",
     "vue-axios": "^2.1.1",
